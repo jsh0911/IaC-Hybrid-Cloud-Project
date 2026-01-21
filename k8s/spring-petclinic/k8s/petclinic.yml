@@ -1,0 +1,90 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic
+spec:
+  type: ClusterIP
+  selector:
+    app: petclinic
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+  labels:
+    app: petclinic
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: petclinic
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+        - name: petclinic
+<<<<<<< Updated upstream
+          image: IMAGE_REPO:IMAGE_TAG
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: petclinic-mysql
+          readinessProbe:
+            httpGet: { path: "/", port: http }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: "/", port: http }
+=======
+          image: dsyer/petclinic
+          ports:
+            - name: http
+              containerPort: 8080
+
+          # 외부 MySQL 접속정보는 Secret에서 주입
+          envFrom:
+            - secretRef:
+                name: petclinic-mysql
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+>>>>>>> Stashed changes
+            initialDelaySeconds: 60
+            periodSeconds: 20
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: petclinic
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: petclinic.team3.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: petclinic
+                port:
+                  number: 80

@@ -1,0 +1,24 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /opt/codedeploy/petclinic
+    overwrite: yes
+
+permissions:
+  - object: /opt/codedeploy/petclinic
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+    mode: 0755
+
+hooks:
+  ApplicationStart:
+    - location: codedeploy/scripts/deploy_k8s.sh
+      timeout: 600
+      runas: ubuntu
+  ValidateService:
+    - location: codedeploy/scripts/validate.sh
+      timeout: 300
+      runas: ubuntu

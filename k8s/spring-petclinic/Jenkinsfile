@@ -1,0 +1,141 @@
+pipeline {
+  agent any
+
+  options {
+    skipDefaultCheckout(true)   // Declarative 자동 체크아웃(중복) 방지
+    timestamps()
+  }
+
+  triggers {
+    pollSCM('H/2 * * * *')   // 2분 폴링
+  }
+
+  environment {
+    AWS_REGION = "ap-northeast-2"
+
+    // ✅ 지금 실제 존재하는 값으로 유지 (인프라 이름을 jsh로 바꾸면 여기들도 같이 바꾸면 됨)
+    S3_BUCKET  = "project06-dr-dbbackup-491085389788-apne2"
+    S3_PREFIX  = "releases/petclinic"
+
+    DOCKER_REPO = "josohyun/spring-petclinic"
+
+    CODEDEPLOY_APP = "project06-petclinic-k8s"
+    CODEDEPLOY_DG  = "onprem-k8s-master"
+    
+    JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
+    PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+  }
+
+  stages {
+    stage("Checkout") {
+      steps { checkout scm }
+    }
+
+    stage("Build JAR") {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euo pipefail
+<<<<<<< HEAD
+          chmod +x ./mvnw || true
+=======
+
+          chmod +x ./mvnw ./gradlew 2>/dev/null || true
+
+>>>>>>> 7889773 (Fix: run sh steps with bash (pipefail) + skip default checkout)
+          if [ -x "./mvnw" ]; then
+            ./mvnw -DskipTests -Dcheckstyle.skip clean package
+            JAR=$(ls -1 target/*.jar | head -n 1)
+          elif [ -x "./gradlew" ]; then
+            ./gradlew bootJar
+            JAR=$(ls -1 build/libs/*.jar | head -n 1)
+          else
+            echo "No mvnw/gradlew found"; exit 1
+          fi
+
+          echo "Using JAR: $JAR"
+          cp -f "$JAR" app.jar
+          ls -lh app.jar
+          java -version
+        '''
+      }
+    }
+
+    stage("Docker Build & Push") {
+      steps {
+        script {
+          env.GIT_SHA = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
+          env.TS_UTC  = sh(returnStdout: true, script: "date -u +%Y%m%dT%H%M%SZ").trim()
+          env.IMAGE_TAG = "${env.GIT_SHA}-${env.TS_UTC}"
+        }
+
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-token', usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
+          sh '''#!/usr/bin/env bash
+            set -euo pipefail
+            echo "$DH_PASS" | docker login -u "$DH_USER" --password-stdin
+            docker build -t ${DOCKER_REPO}:${IMAGE_TAG} .
+            docker push ${DOCKER_REPO}:${IMAGE_TAG}
+          '''
+        }
+      }
+    }
+
+    stage("Prepare CodeDeploy Bundle") {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euo pipefail
+
+          rm -rf .bundle bundle.zip deployment.json
+          mkdir -p .bundle
+
+          cp -a k8s codedeploy .bundle/
+          cp -a codedeploy/appspec.yml .bundle/appspec.yml
+
+          sed -i "s|IMAGE_REPO:IMAGE_TAG|${DOCKER_REPO}:${IMAGE_TAG}|g" .bundle/k8s/petclinic.yml
+
+          (cd .bundle && zip -r ../bundle.zip .)
+
+          cat > deployment.json <<JSON
+{
+  "app": "petclinic",
+  "image": "${DOCKER_REPO}:${IMAGE_TAG}",
+  "git_sha": "${GIT_SHA}",
+  "created_at_utc": "${TS_UTC}"
+}
+JSON
+        '''
+      }
+    }
+
+    stage("Upload to S3 (DR) + LATEST_OK") {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euo pipefail
+          KEY_BASE="${S3_PREFIX}/${TS_UTC}"
+          aws s3 cp bundle.zip "s3://${S3_BUCKET}/${KEY_BASE}/bundle.zip" --region "${AWS_REGION}"
+          aws s3 cp deployment.json "s3://${S3_BUCKET}/${KEY_BASE}/deployment.json" --region "${AWS_REGION}"
+          echo "${KEY_BASE}" | aws s3 cp - "s3://${S3_BUCKET}/${S3_PREFIX}/LATEST_OK" --region "${AWS_REGION}"
+        '''
+      }
+    }
+
+    stage("Trigger CodeDeploy") {
+      steps {
+        sh '''#!/usr/bin/env bash
+          set -euo pipefail
+          KEY_BASE="${S3_PREFIX}/${TS_UTC}"
+
+          DEPLOY_ID=$(aws deploy create-deployment \
+            --region "${AWS_REGION}" \
+            --application-name "${CODEDEPLOY_APP}" \
+            --deployment-group-name "${CODEDEPLOY_DG}" \
+            --s3-location bucket="${S3_BUCKET}",key="${KEY_BASE}/bundle.zip",bundleType=zip \
+            --description "petclinic ${IMAGE_TAG}" \
+            --query "deploymentId" --output text)
+
+          echo "DEPLOY_ID=${DEPLOY_ID}"
+          aws deploy wait deployment-successful --region "${AWS_REGION}" --deployment-id "${DEPLOY_ID}"
+        '''
+      }
+    }
+  }
+}

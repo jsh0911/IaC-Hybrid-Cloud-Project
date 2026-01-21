@@ -1,0 +1,58 @@
+pipeline {
+  agent any
+
+  tools {
+    maven "M3"
+    jdk "JDK21"
+  }
+
+  environment {
+    DOCKERHUB_CREDENTIALS = credentials('DockerCredentials') 
+    AWS_CREDENTIALS_NAME = credentials('AWSCredentials') 
+    GIT_CREDENTIALS = credentials('GitCredentials') 
+  }
+
+  stages {
+    stage('Git Clone'){
+      steps {
+        git url: 'https://github.com/jsh0911/spring-petclinic.git',
+        branch: 'main', credentialsId: 'GitCredentials'
+      }
+    }
+    stage('Maven Build'){
+      steps {
+        echo 'Maven Build'
+          sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+      }
+    }
+    stage('Docker Image Build'){
+      steps {
+        echo 'Docker Image Build'
+        dir("${env.WORKSPACE}") {
+          sh """
+          docker build -t spring-petclinic:$BUILD_NUMBER .
+          docker tag spring-petclinic:$BUILD_NUMBER josohyun/spring-petclinic:latest
+          """
+        }
+      }
+    }
+    stage('Docker Image Push'){
+      steps {
+        echo 'Docker Image Push'
+        sh """
+        echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin
+        docker push josohyun/spring-petclinic:latest
+        """
+      }
+    }
+    stage('Docker Image Remove'){
+      steps {
+        echo 'Docker Image Remove'
+        sh """
+        docker rmi josohyun/spring-petclinic:latest
+        docker rmi josohyun/spring-petclinic:${BUILD_NUMBER}
+        """
+      }
+    }
+  }
+}
