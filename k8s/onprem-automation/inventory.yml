@@ -1,0 +1,27 @@
+all:
+  vars:
+    ansible_user: ubuntu
+    ansible_become: true
+
+  children:
+    k8s_master:
+      hosts:
+        k8s-master:
+          ansible_host: 192.168.20.101
+          ansible_user: ubuntu
+
+    k8s_workers:
+      hosts:
+        k8s-node01:
+          ansible_host: 192.168.20.102
+          ansible_user: ubuntu
+        k8s-node02:
+          ansible_host: 192.168.20.103
+          ansible_user: ubuntu
+
+    db:
+      hosts:
+        db-server:
+          ansible_host: 192.168.20.104
+          ansible_user: ubuntu
+

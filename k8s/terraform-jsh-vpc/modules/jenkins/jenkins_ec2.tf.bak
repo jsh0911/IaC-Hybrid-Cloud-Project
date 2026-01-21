@@ -1,0 +1,135 @@
+# -----------------------------
+# Data: 최신 Ubuntu 22.04 LTS AMI (ap-northeast-2 예시)
+# -----------------------------
+data "aws_ami" "ubuntu_2204" {
+  most_recent = true
+  owners      = ["099720109477"] # Canonical
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
+# -----------------------------
+# Security Group: inbound none, outbound allow (443/80/53 등)
+# - 원칙: 인바운드 0, SSM만 사용
+# -----------------------------
+resource "aws_security_group" "jenkins" {
+  name        = "${var.name_prefix}-jenkins-sg"
+  description = "Jenkins EC2 in private subnet (SSM only)"
+  vpc_id      = var.vpc_id
+
+  # Outbound: 최소 구성
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "HTTPS to DockerHub/S3/etc"
+  }
+
+  # (선택) apt/yum 등 80 필요하면 허용
+  egress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "HTTP (package repos redirect)"
+  }
+
+  # (선택) DNS가 VPC resolver만 쓰면 53은 보통 필요 없음.
+  # 하지만 환경에 따라 필요할 수 있어 열어둠.
+  egress {
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "DNS"
+  }
+
+  tags = merge(var.tags, { Name = "${var.name_prefix}-jenkins-sg" })
+}
+
+# -----------------------------
+# IAM Role for SSM + S3 access
+# -----------------------------
+resource "aws_iam_role" "jenkins" {
+  name = "${var.name_prefix}-jenkins-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Principal = { Service = "ec2.amazonaws.com" }
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
+# SSM Managed Instance Core
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# (필수) S3 업로드/다운로드 권한 (버킷 제한 권장)
+resource "aws_iam_policy" "jenkins_s3" {
+  name = "${var.name_prefix}-jenkins-s3-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "S3WriteReadArtifacts"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          var.s3_bucket_arn,
+          "${var.s3_bucket_arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "jenkins_s3_attach" {
+  role       = aws_iam_role.jenkins.name
+  policy_arn = aws_iam_policy.jenkins_s3.arn
+}
+
+resource "aws_iam_instance_profile" "jenkins" {
+  name = "${var.name_prefix}-jenkins-instance-profile"
+  role = aws_iam_role.jenkins.name
+}
+
+# -----------------------------
+# EC2 Jenkins in Private Subnet
+# -----------------------------
+resource "aws_instance" "jenkins" {
+  ami                         = data.aws_ami.ubuntu_2204.id
+  instance_type               = var.instance_type
+  subnet_id                   = var.private_subnet_id
+  vpc_security_group_ids      = [aws_security_group.jenkins.id]
+  iam_instance_profile        = aws_iam_instance_profile.jenkins.name
+  associate_public_ip_address = false
+
+  # (권장) EBS
+  root_block_device {
+    volume_size = var.root_volume_size
+    volume_type = "gp3"
+  }
+
+  user_data = templatefile("${path.module}/user_data_jenkins.sh.tpl", {
+    jenkins_admin_user = var.jenkins_admin_user
+  })
+
+  tags = merge(var.tags, { Name = "${var.name_prefix}-jenkins-ec2" })
+}
+

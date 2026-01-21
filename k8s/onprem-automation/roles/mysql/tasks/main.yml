@@ -1,0 +1,64 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install MySQL server and client libs
+  ansible.builtin.apt:
+    name:
+      - mysql-server
+      - mysql-client
+      - python3-pymysql
+    state: present
+
+- name: Ensure MySQL is started and enabled
+  ansible.builtin.service:
+    name: mysql
+    state: started
+    enabled: true
+
+# 원격 접속 허용(노드에서 DB 붙어야 함)
+- name: Set bind-address for MySQL
+  ansible.builtin.lineinfile:
+    path: /etc/mysql/mysql.conf.d/mysqld.cnf
+    regexp: '^bind-address\s*='
+    line: "bind-address = {{ mysql_bind_address }}"
+    backup: true
+  notify: Restart mysql
+
+- name: Ensure MySQL listens on port {{ mysql_port }}
+  ansible.builtin.wait_for:
+    host: "127.0.0.1"
+    port: "{{ mysql_port }}"
+    timeout: 30
+
+# DB 생성
+- name: Create petclinic database
+  community.mysql.mysql_db:
+    name: "{{ petclinic_db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+
+# 앱 계정 생성 + 권한
+# 호스트 제한을 "192.168.20.%"로 걸어둬서 내부 노드에서만 붙도록 함
+- name: Create petclinic db user (restricted to k8s cidr)
+  community.mysql.mysql_user:
+    name: "{{ petclinic_db_user }}"
+    password: "{{ petclinic_db_password }}"
+    host: "{{ k8s_cidr }}"
+    priv: "{{ petclinic_db_name }}.*:ALL"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    # Java 호환성 때문에 필요하면 mysql_native_password가 편함
+    # MySQL 8 기본은 caching_sha2_password
+    # plugin: mysql_native_password
+    # encrypted: false
+
+- name: Create backup user (restricted to k8s cidr)
+  community.mysql.mysql_user:
+    name: "{{ backup_user }}"
+    password: "{{ backup_password }}"
+    host: "{{ k8s_cidr }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    priv: "*.*:SELECT,SHOW VIEW,TRIGGER,EVENT,LOCK TABLES"

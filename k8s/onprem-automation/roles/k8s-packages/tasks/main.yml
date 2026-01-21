@@ -1,0 +1,74 @@
+---
+- name: Ensure apt keyrings directory exists
+  become: true
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Add Kubernetes apt repo signing key (pkgs.k8s.io)
+  become: true
+  ansible.builtin.shell: |
+    curl -fsSL "https://pkgs.k8s.io/core:/stable:/v{{ k8s_minor }}/deb/Release.key" | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Add Kubernetes apt repository for minor version
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/apt/sources.list.d/kubernetes.list
+    content: |
+      deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ k8s_minor }}/deb/ /
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Apt update
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Resolve exact package versions for kubeadm/kubelet/kubectl (match {{ k8s_version }})
+  become: true
+  ansible.builtin.shell: |
+    set -e
+    KADM=$(apt-cache madison kubeadm | awk '$3 ~ /^{{ k8s_version }}-/{print $3; exit}')
+    KLET=$(apt-cache madison kubelet | awk '$3 ~ /^{{ k8s_version }}-/{print $3; exit}')
+    KCTL=$(apt-cache madison kubectl | awk '$3 ~ /^{{ k8s_version }}-/{print $3; exit}')
+    echo "$KADM $KLET $KCTL"
+  args:
+    executable: /bin/bash
+  register: k8s_pkg_versions
+  changed_when: false
+
+- name: Fail if required Kubernetes package versions not found
+  ansible.builtin.fail:
+    msg: "Could not find apt versions starting with {{ k8s_version }}-. Check repo or version."
+  when: k8s_pkg_versions.stdout.split() | length != 3
+
+- name: Set facts for package versions
+  ansible.builtin.set_fact:
+    kubeadm_pkg_version: "{{ k8s_pkg_versions.stdout.split()[0] }}"
+    kubelet_pkg_version: "{{ k8s_pkg_versions.stdout.split()[1] }}"
+    kubectl_pkg_version: "{{ k8s_pkg_versions.stdout.split()[2] }}"
+
+- name: Install Kubernetes packages (pinned)
+  become: true
+  ansible.builtin.apt:
+    name:
+      - "kubeadm={{ kubeadm_pkg_version }}"
+      - "kubelet={{ kubelet_pkg_version }}"
+      - "kubectl={{ kubectl_pkg_version }}"
+    state: present
+
+- name: Hold Kubernetes packages
+  become: true
+  ansible.builtin.command: apt-mark hold kubelet kubeadm kubectl
+  changed_when: false
+
+- name: Enable kubelet
+  become: true
+  ansible.builtin.systemd:
+    name: kubelet
+    enabled: true

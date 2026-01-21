@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: petclinic
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: petclinic
+spec:
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: mysql
+  namespace: petclinic
+subsets:
+  - addresses:
+      - ip: 192.168.20.104
+    ports:
+      - port: 3306
+        name: mysql

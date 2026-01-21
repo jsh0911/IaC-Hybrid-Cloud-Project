@@ -1,0 +1,1 @@
+{"app": "petclinic", "created_at_utc": "20260105T054605Z", "bundle_s3_bucket": "project06-dr-release-491085389788-apne2", "bundle_s3_key": "releases/petclinic/20260105T054605Z/bundle.tgz", "bundle_sha256": "a251ac737bc11b8dd9523bdd1425780105f533ca1be20e3c7ceb904293089e4f", "source_manifest_dir": "/home/ubuntu/k8s/aws-automation/playbooks/../../onprem-automation/k8s/petclinic"}

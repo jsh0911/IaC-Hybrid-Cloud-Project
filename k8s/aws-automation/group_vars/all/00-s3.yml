@@ -1,0 +1,3 @@
+aws_region: "ap-northeast-2"
+s3_bucket_db: "project06-dr-dbbackup-491085389788-apne2"
+s3_db_prefix: "db"

@@ -1,0 +1,1456 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.3",
+  "serial": 26,
+  "lineage": "a3331161-bcf5-c3dc-46fb-45c69d880b55",
+  "outputs": {
+    "jenkins_sg_id": {
+      "value": "sg-0c09245efdb85655c",
+      "type": "string"
+    },
+    "private_subnet_ids": {
+      "value": [
+        "subnet-0049c46ac73933597",
+        "subnet-090d97e88666e7abe"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "public_subnet_ids": {
+      "value": [
+        "subnet-0d05f5ac085df79bd",
+        "subnet-054315f2b3a2db665"
+      ],
+      "type": [
+        "tuple",
+        [
+          "string",
+          "string"
+        ]
+      ]
+    },
+    "ssm_instance_profile_name": {
+      "value": "jsh-ec2-ssm-profile",
+      "type": "string"
+    },
+    "vpc_id": {
+      "value": "vpc-0f47d9beb7465e08f",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "aws_iam_policy_document",
+      "name": "ec2_assume",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "2851119427",
+            "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"Service\": \"ec2.amazonaws.com\"\n      }\n    }\n  ]\n}",
+            "minified_json": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"sts:AssumeRole\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}]}",
+            "override_json": null,
+            "override_policy_documents": null,
+            "policy_id": null,
+            "source_json": null,
+            "source_policy_documents": null,
+            "statement": [
+              {
+                "actions": [
+                  "sts:AssumeRole"
+                ],
+                "condition": [],
+                "effect": "Allow",
+                "not_actions": [],
+                "not_principals": [],
+                "not_resources": [],
+                "principals": [
+                  {
+                    "identifiers": [
+                      "ec2.amazonaws.com"
+                    ],
+                    "type": "Service"
+                  }
+                ],
+                "resources": [],
+                "sid": ""
+              }
+            ],
+            "version": "2012-10-17"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_eip",
+      "name": "nat",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address": null,
+            "allocation_id": "eipalloc-0e5809bdcc2629148",
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:elastic-ip/eipalloc-0e5809bdcc2629148",
+            "associate_with_private_ip": null,
+            "association_id": "",
+            "carrier_ip": "",
+            "customer_owned_ip": "",
+            "customer_owned_ipv4_pool": "",
+            "domain": "vpc",
+            "id": "eipalloc-0e5809bdcc2629148",
+            "instance": "",
+            "ipam_pool_id": null,
+            "network_border_group": "ap-northeast-2",
+            "network_interface": "",
+            "private_dns": null,
+            "private_ip": "",
+            "ptr_record": "",
+            "public_dns": "ec2-15-165-153-18.ap-northeast-2.compute.amazonaws.com",
+            "public_ip": "15.165.153.18",
+            "public_ipv4_pool": "amazon",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-nat-eip",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-nat-eip",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjoxODAwMDAwMDAwMDAsInJlYWQiOjkwMDAwMDAwMDAwMCwidXBkYXRlIjozMDAwMDAwMDAwMDB9fQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_instance_profile",
+      "name": "ec2_ssm",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::491085389788:instance-profile/jsh-ec2-ssm-profile",
+            "create_date": "2026-01-13T03:31:54Z",
+            "id": "jsh-ec2-ssm-profile",
+            "name": "jsh-ec2-ssm-profile",
+            "name_prefix": "",
+            "path": "/",
+            "role": "jsh-ec2-ssm-role",
+            "tags": null,
+            "tags_all": {},
+            "unique_id": "AIPAXEVXYL7OMG6GTKUPG"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.ec2_ssm",
+            "data.aws_iam_policy_document.ec2_assume"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "ec2_ssm",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::491085389788:role/jsh-ec2-ssm-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-01-13T03:31:53Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "jsh-ec2-ssm-role",
+            "inline_policy": [],
+            "managed_policy_arns": [],
+            "max_session_duration": 3600,
+            "name": "jsh-ec2-ssm-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {
+              "Name": "jsh-ec2-ssm-role",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-ec2-ssm-role",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "unique_id": "AROAXEVXYL7OK57U3TL4J"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "name": "jsh-ec2-ssm-role"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "data.aws_iam_policy_document.ec2_assume"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "ssm_core",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "jsh-ec2-ssm-role/arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "role": "jsh-ec2-ssm-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "policy_arn": "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+            "role": "jsh-ec2-ssm-role"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.ec2_ssm",
+            "data.aws_iam_policy_document.ec2_assume"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:internet-gateway/igw-07ce465a8c580fea7",
+            "id": "igw-07ce465a8c580fea7",
+            "owner_id": "491085389788",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-igw",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-igw",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_nat_gateway",
+      "name": "nat",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allocation_id": "eipalloc-0e5809bdcc2629148",
+            "association_id": "eipassoc-0837acf53414d3ac3",
+            "auto_provision_zones": null,
+            "auto_scaling_ips": null,
+            "availability_mode": "zonal",
+            "availability_zone_address": [],
+            "connectivity_type": "public",
+            "id": "nat-0de7aad28950322d1",
+            "network_interface_id": "eni-0ffde640d542c689f",
+            "private_ip": "172.3.1.115",
+            "public_ip": "15.165.153.18",
+            "region": "ap-northeast-2",
+            "regional_nat_gateway_address": [],
+            "regional_nat_gateway_auto_mode": null,
+            "route_table_id": null,
+            "secondary_allocation_ids": [],
+            "secondary_private_ip_address_count": 0,
+            "secondary_private_ip_addresses": [],
+            "subnet_id": "subnet-0d05f5ac085df79bd",
+            "tags": {
+              "Name": "jsh-natgw",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-natgw",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTgwMDAwMDAwMDAwMCwidXBkYXRlIjo2MDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "aws_eip.nat",
+            "aws_internet_gateway.igw",
+            "aws_subnet.public_a",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route",
+      "name": "private_default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "carrier_gateway_id": "",
+            "core_network_arn": "",
+            "destination_cidr_block": "0.0.0.0/0",
+            "destination_ipv6_cidr_block": "",
+            "destination_prefix_list_id": "",
+            "egress_only_gateway_id": "",
+            "gateway_id": "",
+            "id": "r-rtb-02aa1f09099f46dad1080289494",
+            "instance_id": "",
+            "instance_owner_id": "",
+            "local_gateway_id": "",
+            "nat_gateway_id": "nat-0de7aad28950322d1",
+            "network_interface_id": "",
+            "origin": "CreateRoute",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-02aa1f09099f46dad",
+            "state": "active",
+            "timeouts": null,
+            "transit_gateway_id": "",
+            "vpc_endpoint_id": "",
+            "vpc_peering_connection_id": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "destination_cidr_block": "0.0.0.0/0",
+            "destination_ipv6_cidr_block": null,
+            "destination_prefix_list_id": null,
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-02aa1f09099f46dad"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_eip.nat",
+            "aws_internet_gateway.igw",
+            "aws_nat_gateway.nat",
+            "aws_route_table.private",
+            "aws_subnet.public_a",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route",
+      "name": "public_default",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "carrier_gateway_id": "",
+            "core_network_arn": "",
+            "destination_cidr_block": "0.0.0.0/0",
+            "destination_ipv6_cidr_block": "",
+            "destination_prefix_list_id": "",
+            "egress_only_gateway_id": "",
+            "gateway_id": "igw-07ce465a8c580fea7",
+            "id": "r-rtb-0c0f7477abac991591080289494",
+            "instance_id": "",
+            "instance_owner_id": "",
+            "local_gateway_id": "",
+            "nat_gateway_id": "",
+            "network_interface_id": "",
+            "origin": "CreateRoute",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-0c0f7477abac99159",
+            "state": "active",
+            "timeouts": null,
+            "transit_gateway_id": "",
+            "vpc_endpoint_id": "",
+            "vpc_peering_connection_id": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "destination_cidr_block": "0.0.0.0/0",
+            "destination_ipv6_cidr_block": null,
+            "destination_prefix_list_id": null,
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-0c0f7477abac99159"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_internet_gateway.igw",
+            "aws_route_table.public",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "private",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:route-table/rtb-02aa1f09099f46dad",
+            "id": "rtb-02aa1f09099f46dad",
+            "owner_id": "491085389788",
+            "propagating_vgws": [],
+            "region": "ap-northeast-2",
+            "route": [],
+            "tags": {
+              "Name": "jsh-rt-private",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-rt-private",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "rtb-02aa1f09099f46dad",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:route-table/rtb-0c0f7477abac99159",
+            "id": "rtb-0c0f7477abac99159",
+            "owner_id": "491085389788",
+            "propagating_vgws": [],
+            "region": "ap-northeast-2",
+            "route": [],
+            "tags": {
+              "Name": "jsh-rt-public",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-rt-public",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "rtb-0c0f7477abac99159",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "private_a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-05fce708618de5c17",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-02aa1f09099f46dad",
+            "subnet_id": "subnet-0049c46ac73933597",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_route_table.private",
+            "aws_subnet.private_a",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "private_c",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0642ee3bc943a12ef",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-02aa1f09099f46dad",
+            "subnet_id": "subnet-090d97e88666e7abe",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_route_table.private",
+            "aws_subnet.private_c",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "public_a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-002643ba213073008",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-0c0f7477abac99159",
+            "subnet_id": "subnet-0d05f5ac085df79bd",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_route_table.public",
+            "aws_subnet.public_a",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_route_table_association",
+      "name": "public_c",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "gateway_id": "",
+            "id": "rtbassoc-0e3b6563cabc55c00",
+            "region": "ap-northeast-2",
+            "route_table_id": "rtb-0c0f7477abac99159",
+            "subnet_id": "subnet-054315f2b3a2db665",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAsImRlbGV0ZSI6MzAwMDAwMDAwMDAwLCJ1cGRhdGUiOjEyMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_route_table.public",
+            "aws_subnet.public_c",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "jenkins",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:security-group/sg-0c09245efdb85655c",
+            "description": "Jenkins in private subnet, access via SSM",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0c09245efdb85655c",
+            "ingress": [],
+            "name": "jsh-jenkins-sg",
+            "name_prefix": "",
+            "owner_id": "491085389788",
+            "region": "ap-northeast-2",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "jsh-jenkins-sg",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-jenkins-sg",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "sg-0c09245efdb85655c",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "vpce",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:security-group/sg-087f7b19ff6d3434b",
+            "description": "Interface Endpoint SG",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-087f7b19ff6d3434b",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "172.3.0.0/16"
+                ],
+                "description": "",
+                "from_port": 443,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 443
+              }
+            ],
+            "name": "jsh-vpce-sg",
+            "name_prefix": "",
+            "owner_id": "491085389788",
+            "region": "ap-northeast-2",
+            "revoke_rules_on_delete": false,
+            "tags": {
+              "Name": "jsh-vpce-sg",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpce-sg",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "sg-087f7b19ff6d3434b",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "private_a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:subnet/subnet-0049c46ac73933597",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "ap-northeast-2a",
+            "availability_zone_id": "apne2-az1",
+            "cidr_block": "172.3.11.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0049c46ac73933597",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "491085389788",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-private-a",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "private"
+            },
+            "tags_all": {
+              "Name": "jsh-private-a",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "private"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "subnet-0049c46ac73933597",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "private_c",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:subnet/subnet-090d97e88666e7abe",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "ap-northeast-2c",
+            "availability_zone_id": "apne2-az3",
+            "cidr_block": "172.3.12.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-090d97e88666e7abe",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "491085389788",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-private-c",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "private"
+            },
+            "tags_all": {
+              "Name": "jsh-private-c",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "private"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "subnet-090d97e88666e7abe",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public_a",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:subnet/subnet-0d05f5ac085df79bd",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "ap-northeast-2a",
+            "availability_zone_id": "apne2-az1",
+            "cidr_block": "172.3.1.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0d05f5ac085df79bd",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "491085389788",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-public-a",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "public"
+            },
+            "tags_all": {
+              "Name": "jsh-public-a",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "subnet-0d05f5ac085df79bd",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "public_c",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:subnet/subnet-054315f2b3a2db665",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "ap-northeast-2c",
+            "availability_zone_id": "apne2-az3",
+            "cidr_block": "172.3.2.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-054315f2b3a2db665",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": true,
+            "outpost_arn": "",
+            "owner_id": "491085389788",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-public-c",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "public"
+            },
+            "tags_all": {
+              "Name": "jsh-public-c",
+              "Owner": "jsh",
+              "Project": "jsh",
+              "Tier": "public"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "subnet-054315f2b3a2db665",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:vpc/vpc-0f47d9beb7465e08f",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "172.3.0.0/16",
+            "default_network_acl_id": "acl-068150f3616747f4c",
+            "default_route_table_id": "rtb-0576230519e3d60ea",
+            "default_security_group_id": "sg-08f276fb88db7b0d8",
+            "dhcp_options_id": "dopt-02d7f32c3b2fa1aae",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-0f47d9beb7465e08f",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-0576230519e3d60ea",
+            "owner_id": "491085389788",
+            "region": "ap-northeast-2",
+            "tags": {
+              "Name": "jsh-vpc",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpc",
+              "Owner": "jsh",
+              "Project": "jsh"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "vpc-0f47d9beb7465e08f",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_endpoint",
+      "name": "ec2messages",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:vpc-endpoint/vpce-02a485aa565009049",
+            "auto_accept": null,
+            "cidr_blocks": [],
+            "dns_entry": [
+              {
+                "dns_name": "vpce-02a485aa565009049-ejxlh0hs.ec2messages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-02a485aa565009049-ejxlh0hs-ap-northeast-2a.ec2messages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-02a485aa565009049-ejxlh0hs-ap-northeast-2c.ec2messages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "ec2messages.ap-northeast-2.amazonaws.com",
+                "hosted_zone_id": "Z02593052QFMRGG2NV065"
+              }
+            ],
+            "dns_options": [
+              {
+                "dns_record_ip_type": "ipv4",
+                "private_dns_only_for_inbound_resolver_endpoint": false,
+                "private_dns_preference": "",
+                "private_dns_specified_domains": []
+              }
+            ],
+            "id": "vpce-02a485aa565009049",
+            "ip_address_type": "ipv4",
+            "network_interface_ids": [
+              "eni-063597949f30572ba",
+              "eni-09f7090f29d086764"
+            ],
+            "owner_id": "491085389788",
+            "policy": "{\"Statement\":[{\"Action\":\"*\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"*\"}]}",
+            "prefix_list_id": null,
+            "private_dns_enabled": true,
+            "region": "ap-northeast-2",
+            "requester_managed": false,
+            "resource_configuration_arn": "",
+            "route_table_ids": [],
+            "security_group_ids": [
+              "sg-087f7b19ff6d3434b"
+            ],
+            "service_name": "com.amazonaws.ap-northeast-2.ec2messages",
+            "service_network_arn": "",
+            "service_region": "ap-northeast-2",
+            "state": "available",
+            "subnet_configuration": [
+              {
+                "ipv4": "172.3.11.223",
+                "ipv6": "",
+                "subnet_id": "subnet-0049c46ac73933597"
+              },
+              {
+                "ipv4": "172.3.12.102",
+                "ipv6": "",
+                "subnet_id": "subnet-090d97e88666e7abe"
+              }
+            ],
+            "subnet_ids": [
+              "subnet-0049c46ac73933597",
+              "subnet-090d97e88666e7abe"
+            ],
+            "tags": {
+              "Name": "jsh-vpce-ec2messages",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpce-ec2messages",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_endpoint_type": "Interface",
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "vpce-02a485aa565009049",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_security_group.vpce",
+            "aws_subnet.private_a",
+            "aws_subnet.private_c",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_endpoint",
+      "name": "s3",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:vpc-endpoint/vpce-05ee8fc9895174762",
+            "auto_accept": null,
+            "cidr_blocks": [
+              "52.219.202.0/23",
+              "52.219.144.0/22",
+              "52.219.204.0/22",
+              "3.5.144.0/23",
+              "3.5.140.0/22",
+              "52.219.148.0/23",
+              "52.219.60.0/23",
+              "3.5.184.0/21",
+              "52.219.56.0/22"
+            ],
+            "dns_entry": [],
+            "dns_options": [
+              {
+                "dns_record_ip_type": "service-defined",
+                "private_dns_only_for_inbound_resolver_endpoint": false,
+                "private_dns_preference": "",
+                "private_dns_specified_domains": []
+              }
+            ],
+            "id": "vpce-05ee8fc9895174762",
+            "ip_address_type": "ipv4",
+            "network_interface_ids": [],
+            "owner_id": "491085389788",
+            "policy": "{\"Statement\":[{\"Action\":\"*\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"*\"}],\"Version\":\"2008-10-17\"}",
+            "prefix_list_id": "pl-78a54011",
+            "private_dns_enabled": false,
+            "region": "ap-northeast-2",
+            "requester_managed": false,
+            "resource_configuration_arn": "",
+            "route_table_ids": [
+              "rtb-02aa1f09099f46dad"
+            ],
+            "security_group_ids": [],
+            "service_name": "com.amazonaws.ap-northeast-2.s3",
+            "service_network_arn": "",
+            "service_region": "ap-northeast-2",
+            "state": "available",
+            "subnet_configuration": [],
+            "subnet_ids": [],
+            "tags": {
+              "Name": "jsh-vpce-s3",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpce-s3",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_endpoint_type": "Gateway",
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "vpce-05ee8fc9895174762",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_route_table.private",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_endpoint",
+      "name": "ssm",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:vpc-endpoint/vpce-035dd8a036799b77c",
+            "auto_accept": null,
+            "cidr_blocks": [],
+            "dns_entry": [
+              {
+                "dns_name": "vpce-035dd8a036799b77c-qf47c686.ssm.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-035dd8a036799b77c-qf47c686-ap-northeast-2c.ssm.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-035dd8a036799b77c-qf47c686-ap-northeast-2a.ssm.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "ssm.ap-northeast-2.amazonaws.com",
+                "hosted_zone_id": "Z02592631SF0I6OC2VOXC"
+              },
+              {
+                "dns_name": "ssm.ap-northeast-2.api.aws",
+                "hosted_zone_id": "Z02601533KRPNPZ3EALHS"
+              }
+            ],
+            "dns_options": [
+              {
+                "dns_record_ip_type": "ipv4",
+                "private_dns_only_for_inbound_resolver_endpoint": false,
+                "private_dns_preference": "",
+                "private_dns_specified_domains": []
+              }
+            ],
+            "id": "vpce-035dd8a036799b77c",
+            "ip_address_type": "ipv4",
+            "network_interface_ids": [
+              "eni-0c7082a7d429ff63b",
+              "eni-0fc07cf37eea2e6cc"
+            ],
+            "owner_id": "491085389788",
+            "policy": "{\"Statement\":[{\"Action\":\"*\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"*\"}]}",
+            "prefix_list_id": null,
+            "private_dns_enabled": true,
+            "region": "ap-northeast-2",
+            "requester_managed": false,
+            "resource_configuration_arn": "",
+            "route_table_ids": [],
+            "security_group_ids": [
+              "sg-087f7b19ff6d3434b"
+            ],
+            "service_name": "com.amazonaws.ap-northeast-2.ssm",
+            "service_network_arn": "",
+            "service_region": "ap-northeast-2",
+            "state": "available",
+            "subnet_configuration": [
+              {
+                "ipv4": "172.3.11.215",
+                "ipv6": "",
+                "subnet_id": "subnet-0049c46ac73933597"
+              },
+              {
+                "ipv4": "172.3.12.13",
+                "ipv6": "",
+                "subnet_id": "subnet-090d97e88666e7abe"
+              }
+            ],
+            "subnet_ids": [
+              "subnet-0049c46ac73933597",
+              "subnet-090d97e88666e7abe"
+            ],
+            "tags": {
+              "Name": "jsh-vpce-ssm",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpce-ssm",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_endpoint_type": "Interface",
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "vpce-035dd8a036799b77c",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_security_group.vpce",
+            "aws_subnet.private_a",
+            "aws_subnet.private_c",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc_endpoint",
+      "name": "ssmmessages",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:ap-northeast-2:491085389788:vpc-endpoint/vpce-0d4dc527d5ac6a4fa",
+            "auto_accept": null,
+            "cidr_blocks": [],
+            "dns_entry": [
+              {
+                "dns_name": "vpce-0d4dc527d5ac6a4fa-r1odfgk6.ssmmessages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-0d4dc527d5ac6a4fa-r1odfgk6-ap-northeast-2a.ssmmessages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "vpce-0d4dc527d5ac6a4fa-r1odfgk6-ap-northeast-2c.ssmmessages.ap-northeast-2.vpce.amazonaws.com",
+                "hosted_zone_id": "Z27UANNT0PRK1T"
+              },
+              {
+                "dns_name": "ssmmessages.ap-northeast-2.amazonaws.com",
+                "hosted_zone_id": "Z09909761VSK38KKWFT0O"
+              },
+              {
+                "dns_name": "ssmmessages.ap-northeast-2.api.aws",
+                "hosted_zone_id": "Z024786329ANWXKP2Q2Z6"
+              }
+            ],
+            "dns_options": [
+              {
+                "dns_record_ip_type": "ipv4",
+                "private_dns_only_for_inbound_resolver_endpoint": false,
+                "private_dns_preference": "",
+                "private_dns_specified_domains": []
+              }
+            ],
+            "id": "vpce-0d4dc527d5ac6a4fa",
+            "ip_address_type": "ipv4",
+            "network_interface_ids": [
+              "eni-03ee5cd0236525ca3",
+              "eni-082623ad1df3709e9"
+            ],
+            "owner_id": "491085389788",
+            "policy": "{\"Statement\":[{\"Action\":\"*\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"*\"}]}",
+            "prefix_list_id": null,
+            "private_dns_enabled": true,
+            "region": "ap-northeast-2",
+            "requester_managed": false,
+            "resource_configuration_arn": "",
+            "route_table_ids": [],
+            "security_group_ids": [
+              "sg-087f7b19ff6d3434b"
+            ],
+            "service_name": "com.amazonaws.ap-northeast-2.ssmmessages",
+            "service_network_arn": "",
+            "service_region": "ap-northeast-2",
+            "state": "available",
+            "subnet_configuration": [
+              {
+                "ipv4": "172.3.11.113",
+                "ipv6": "",
+                "subnet_id": "subnet-0049c46ac73933597"
+              },
+              {
+                "ipv4": "172.3.12.186",
+                "ipv6": "",
+                "subnet_id": "subnet-090d97e88666e7abe"
+              }
+            ],
+            "subnet_ids": [
+              "subnet-0049c46ac73933597",
+              "subnet-090d97e88666e7abe"
+            ],
+            "tags": {
+              "Name": "jsh-vpce-ssmmessages",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "tags_all": {
+              "Name": "jsh-vpce-ssmmessages",
+              "Owner": "jsh",
+              "Project": "jsh"
+            },
+            "timeouts": null,
+            "vpc_endpoint_type": "Interface",
+            "vpc_id": "vpc-0f47d9beb7465e08f"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "491085389788",
+            "id": "vpce-0d4dc527d5ac6a4fa",
+            "region": "ap-northeast-2"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "aws_security_group.vpce",
+            "aws_subnet.private_a",
+            "aws_subnet.private_c",
+            "aws_vpc.main"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

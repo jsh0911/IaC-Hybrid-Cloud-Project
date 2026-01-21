@@ -1,0 +1,90 @@
+---
+- name: Check if cluster already initialized
+  become: true
+  ansible.builtin.stat:
+    path: /etc/kubernetes/admin.conf
+  register: k8s_admin_conf
+
+- name: Write kubeadm config
+  become: true
+  ansible.builtin.copy:
+    dest: /tmp/kubeadm-config.yaml
+    content: |
+      apiVersion: kubeadm.k8s.io/v1beta4
+      kind: InitConfiguration
+      localAPIEndpoint:
+        advertiseAddress: "{{ ansible_host }}"
+        bindPort: 6443
+      nodeRegistration:
+        criSocket: "unix:///run/containerd/containerd.sock"
+      ---
+      apiVersion: kubeadm.k8s.io/v1beta4
+      kind: ClusterConfiguration
+      kubernetesVersion: "v{{ k8s_version }}"
+      networking:
+        podSubnet: "{{ pod_cidr }}"
+        serviceSubnet: "{{ service_cidr }}"
+  when: not k8s_admin_conf.stat.exists
+
+- name: kubeadm init
+  become: true
+  ansible.builtin.command: kubeadm init --config /tmp/kubeadm-config.yaml
+  when: not k8s_admin_conf.stat.exists
+
+- name: Ensure .kube dir for ubuntu
+  become: true
+  ansible.builtin.file:
+    path: /home/ubuntu/.kube
+    state: directory
+    owner: ubuntu
+    group: ubuntu
+    mode: "0700"
+
+- name: Copy admin kubeconfig to ubuntu
+  become: true
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/ubuntu/.kube/config
+    remote_src: true
+    owner: ubuntu
+    group: ubuntu
+    mode: "0600"
+
+- name: Download Calico manifest (v{{ calico_version }})
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ calico_manifest_url }}"
+    dest: /tmp/calico.yaml
+    mode: "0644"
+
+# 중요: Calico 기본 풀(192.168.0.0/16)은 우리 노드망(192.168.20.0/24)과 겹칠 수 있어서,
+# Pod CIDR(10.244.0.0/16)로 명시적으로 지정
+- name: Enable CALICO_IPV4POOL_CIDR and set to pod_cidr
+  become: true
+  ansible.builtin.replace:
+    path: /tmp/calico.yaml
+    regexp: '^(\s*)# - name: CALICO_IPV4POOL_CIDR\s*$'
+    replace: '\1- name: CALICO_IPV4POOL_CIDR'
+
+- name: Set CALICO_IPV4POOL_CIDR value to pod_cidr
+  become: true
+  ansible.builtin.replace:
+    path: /tmp/calico.yaml
+    regexp: '^(\s*)#\s*value:\s*\"192\.168\.0\.0/16\"\s*$'
+    replace: '\1  value: "{{ pod_cidr }}"'
+
+- name: Apply Calico
+  become: false
+  ansible.builtin.command: kubectl apply -f /tmp/calico.yaml
+  environment:
+    KUBECONFIG: /home/ubuntu/.kube/config
+
+- name: Get worker join command
+  become: true
+  ansible.builtin.command: kubeadm token create --print-join-command
+  register: join_cmd
+  changed_when: false
+
+- name: Set join command fact
+  ansible.builtin.set_fact:
+    k8s_join_command: "{{ join_cmd.stdout }}"

@@ -1,0 +1,181 @@
+---
+- name: On-prem MySQL backup -> create dump and fetch to controller
+  hosts: db
+  gather_facts: false
+
+  vars:
+    db_name: "petclinic"
+    backup_dir: "/var/backups/mysql"
+    artifacts_dir: "{{ playbook_dir }}/../artifacts/db"
+
+  tasks:
+    - name: Generate UTC timestamp (once)
+      ansible.builtin.set_fact:
+        ts_utc: "{{ lookup('pipe', 'date -u +%Y%m%dT%H%M%SZ') }}"
+      run_once: true
+
+    # 핵심: S3 관련 변수들을 "db-host facts"로 박아서 다음 localhost play에서도 항상 보이게 함
+    - name: Persist S3 settings as facts on db host
+      ansible.builtin.set_fact:
+        aws_region: "{{ aws_region | default('ap-northeast-2') }}"
+        # inventory/group_vars에서 못 읽어도 최소 동작하도록 기본값을 둠 (필요시 여기만 바꾸면 됨)
+        s3_bucket_db: "{{ s3_bucket_db | default('project06-dr-dbbackup-491085389788-apne2') }}"
+        s3_db_prefix: "{{ s3_db_prefix | default('db') }}"
+      changed_when: false
+
+    - name: Ensure artifacts dir exists on controller
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ artifacts_dir }}"
+        state: directory
+        mode: "0755"
+      run_once: true
+
+    - name: Ensure backup dir exists on db-server
+      become: true
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        mode: "0750"
+
+    - name: Check MySQL socket auth (sudo mysql)
+      ansible.builtin.command: sudo mysql -NBe "SELECT 1;"
+      register: mysql_socket_check
+      changed_when: false
+      failed_when: false
+
+    - name: Decide dump method
+      ansible.builtin.set_fact:
+        use_socket_auth: "{{ mysql_socket_check.rc == 0 }}"
+      changed_when: false
+
+    - name: Assert MySQL creds exist when socket auth is not available
+      ansible.builtin.assert:
+        that:
+          - mysql_backup_user is defined
+          - mysql_backup_password is defined
+          - (mysql_backup_user | string | length) > 0
+          - (mysql_backup_password | string | length) > 0
+        fail_msg: "socket auth not available; define mysql_backup_user/mysql_backup_password (preferably via vault)."
+      when: not use_socket_auth
+      no_log: true
+
+    - name: Set dump paths
+      ansible.builtin.set_fact:
+        remote_dump_path: "{{ backup_dir }}/{{ db_name }}-{{ ts_utc }}.sql.gz"
+        local_dump_path: "{{ artifacts_dir }}/mysql-{{ db_name }}-{{ ts_utc }}.sql.gz"
+      changed_when: false
+
+    - name: Create gzipped dump on db-server (socket auth)
+      ansible.builtin.shell: |
+        set -euo pipefail
+        OUT="{{ remote_dump_path }}"
+        sudo mysqldump --single-transaction --routines --triggers --events "{{ db_name }}" \
+          | gzip -c > "$OUT"
+        ls -lh "$OUT"
+      args:
+        executable: /bin/bash
+      when: use_socket_auth
+
+    - name: Create gzipped dump on db-server (user/password)
+      ansible.builtin.shell: |
+        set -euo pipefail
+        OUT="{{ remote_dump_path }}"
+        mysqldump -h 127.0.0.1 -u "{{ mysql_backup_user }}" \
+          --single-transaction --routines --triggers --events "{{ db_name }}" \
+          | gzip -c > "$OUT"
+        ls -lh "$OUT"
+      args:
+        executable: /bin/bash
+      environment:
+        MYSQL_PWD: "{{ mysql_backup_password }}"
+      when: not use_socket_auth
+      no_log: true
+
+    - name: Fetch dump to controller
+      ansible.builtin.fetch:
+        src: "{{ remote_dump_path }}"
+        dest: "{{ local_dump_path }}"
+        flat: true
+
+
+- name: Upload dump/metadata to S3 from controller (localhost play)
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - amazon.aws
+  become: false
+  environment:
+    HOME: "/home/ubuntu"
+    AWS_PROFILE: "default"
+    AWS_SDK_LOAD_CONFIG: "1"
+    AWS_SHARED_CREDENTIALS_FILE: "/home/ubuntu/.aws/credentials"
+    AWS_CONFIG_FILE: "/home/ubuntu/.aws/config"
+    AWS_REGION: "{{ aws_region }}"
+    AWS_DEFAULT_REGION: "{{ aws_region }}"
+
+
+
+  vars:
+    db_host: "{{ groups['db'][0] }}"
+    db_name: "{{ hostvars[db_host].db_name | default('petclinic') }}"
+    ts_utc: "{{ hostvars[db_host].ts_utc }}"
+    artifacts_dir: "{{ playbook_dir }}/../artifacts/db"
+    local_dump_path: "{{ artifacts_dir }}/mysql-{{ db_name }}-{{ ts_utc }}.sql.gz"
+    backup_json_path: "{{ artifacts_dir }}/backup-{{ db_name }}-{{ ts_utc }}.json"
+
+    aws_region: "{{ hostvars[db_host].aws_region }}"
+    s3_bucket_db: "{{ hostvars[db_host].s3_bucket_db }}"
+    s3_db_prefix: "{{ hostvars[db_host].s3_db_prefix }}"
+    s3_prefix: "{{ s3_db_prefix }}/{{ db_name }}/{{ ts_utc }}"
+
+  tasks:
+    - name: Stat local dump (sha256)
+      ansible.builtin.stat:
+        path: "{{ local_dump_path }}"
+        checksum_algorithm: sha256
+      register: local_dump_stat
+
+    - name: Upload dump to S3 (DB bucket)
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_db }}"
+        object: "{{ s3_prefix }}/mysql.sql.gz"
+        src: "{{ local_dump_path }}"
+        mode: put
+
+    - name: Write backup.json locally
+      ansible.builtin.copy:
+        dest: "{{ backup_json_path }}"
+        mode: "0644"
+        content: |
+          {
+            "db": "{{ db_name }}",
+            "created_at_utc": "{{ ts_utc }}",
+            "bucket": "{{ s3_bucket_db }}",
+            "key": "{{ s3_prefix }}/mysql.sql.gz",
+            "sha256": "{{ local_dump_stat.stat.checksum }}"
+          }
+
+    - name: Upload backup.json to S3
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_db }}"
+        object: "{{ s3_prefix }}/backup.json"
+        src: "{{ backup_json_path }}"
+        mode: put
+
+    - name: Update LATEST_OK pointer (DB backups)
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_db }}"
+        object: "{{ s3_db_prefix }}/LATEST_OK"
+        content: "{{ s3_prefix }}"
+        mode: put
+
+    - name: Show result
+      ansible.builtin.debug:
+        msg:
+          - "Uploaded: s3://{{ s3_bucket_db }}/{{ s3_prefix }}/mysql.sql.gz"
+          - "Metadata: s3://{{ s3_bucket_db }}/{{ s3_prefix }}/backup.json"
+          - "LATEST_OK: s3://{{ s3_bucket_db }}/{{ s3_db_prefix }}/LATEST_OK"

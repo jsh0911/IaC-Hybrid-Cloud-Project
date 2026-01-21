@@ -1,0 +1,126 @@
+- name: Debug Jenkins service via SSM (AWS CLI)
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    - name: Find instance by Name tag
+      amazon.aws.ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ jenkins_instance_name_tag }}"
+          "instance-state-name": "running"
+      register: ec2
+
+    - name: Fail if instance not found
+      ansible.builtin.fail:
+        msg: "No running instance found with tag Name={{ jenkins_instance_name_tag }}"
+      when: ec2.instances | length == 0
+
+    - name: Set instance id
+      ansible.builtin.set_fact:
+        instance_id: "{{ ec2.instances[0].instance_id }}"
+
+    - name: Build debug commands
+      ansible.builtin.set_fact:
+        ssm_commands:
+          - "set +e"
+          - "echo '=== OS ==='"; "cat /etc/os-release || true"
+          - "echo '=== CPU/MEM ==='"; "free -m || true"; "cat /proc/meminfo | head -n 5 || true"
+          - "echo '=== DISK ==='"; "df -h || true"
+          - "echo '=== PORTS (8080) ==='"; "sudo ss -lntp | grep ':8080' || true"
+          - "echo '=== Jenkins sysconfig ==='"; "sudo sed -n '1,200p' /etc/sysconfig/jenkins || true"
+          - "echo '=== systemctl status jenkins ==='"; "sudo systemctl status jenkins --no-pager -l || true"
+          - "echo '=== journalctl -u jenkins (last 200) ==='"; "sudo journalctl -u jenkins --no-pager -n 200 || true"
+          - "echo '=== java ==='"; "java -version || true"
+
+    - name: Send SSM debug command
+      ansible.builtin.command:
+        argv:
+          - aws
+          - ssm
+          - send-command
+          - --region
+          - "{{ aws_region }}"
+          - --instance-ids
+          - "{{ instance_id }}"
+          - --document-name
+          - AWS-RunShellScript
+          - --parameters
+          - "{{ {'commands': ssm_commands} | to_json }}"
+          - --query
+          - Command.CommandId
+          - --output
+          - text
+      register: cmd_id
+      changed_when: true
+
+    - name: Wait command completion
+      ansible.builtin.command:
+        argv:
+          - aws
+          - ssm
+          - get-command-invocation
+          - --region
+          - "{{ aws_region }}"
+          - --command-id
+          - "{{ cmd_id.stdout }}"
+          - --instance-id
+          - "{{ instance_id }}"
+          - --query
+          - Status
+          - --output
+          - text
+      register: cmd_status
+      changed_when: false
+      retries: 60
+      delay: 5
+      until: cmd_status.stdout in ['Success','Failed','TimedOut','Cancelled']
+
+    - name: Get STDOUT
+      ansible.builtin.command:
+        argv:
+          - aws
+          - ssm
+          - get-command-invocation
+          - --region
+          - "{{ aws_region }}"
+          - --command-id
+          - "{{ cmd_id.stdout }}"
+          - --instance-id
+          - "{{ instance_id }}"
+          - --query
+          - StandardOutputContent
+          - --output
+          - text
+      register: cmd_stdout
+      changed_when: false
+
+    - name: Get STDERR
+      ansible.builtin.command:
+        argv:
+          - aws
+          - ssm
+          - get-command-invocation
+          - --region
+          - "{{ aws_region }}"
+          - --command-id
+          - "{{ cmd_id.stdout }}"
+          - --instance-id
+          - "{{ instance_id }}"
+          - --query
+          - StandardErrorContent
+          - --output
+          - text
+      register: cmd_stderr
+      changed_when: false
+
+    - name: Print debug result
+      ansible.builtin.debug:
+        msg:
+          - "InstanceId={{ instance_id }}"
+          - "CommandId={{ cmd_id.stdout }}"
+          - "Status={{ cmd_status.stdout }}"
+          - "STDOUT:\n{{ cmd_stdout.stdout }}"
+          - "STDERR:\n{{ cmd_stderr.stdout }}"

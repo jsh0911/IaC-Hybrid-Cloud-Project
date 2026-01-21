@@ -1,0 +1,65 @@
+- name: Attach SSM IAM role to existing EC2 instance
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  vars:
+    role_name: "project06-ssm-role"
+    profile_name: "project06-ssm-instance-profile"
+    ssm_policy_arn: "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
+  tasks:
+    - name: Find instance by Name tag
+      amazon.aws.ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ jenkins_instance_name_tag }}"
+          "instance-state-name": "running"
+      register: ec2
+
+    - name: Fail if instance not found
+      ansible.builtin.fail:
+        msg: "No running instance found with tag Name={{ jenkins_instance_name_tag }}"
+      when: ec2.instances | length == 0
+
+    - name: Set instance id
+      ansible.builtin.set_fact:
+        instance_id: "{{ ec2.instances[0].instance_id }}"
+
+    - name: Ensure IAM role exists and has SSM managed policy attached
+      amazon.aws.iam_role:
+        name: "{{ role_name }}"
+        assume_role_policy_document:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: ec2.amazonaws.com
+              Action: "sts:AssumeRole"
+        managed_policies:
+          - "{{ ssm_policy_arn }}"
+        purge_policies: false
+        create_instance_profile: false
+        state: present
+
+    - name: Create/ensure instance profile and attach role
+      amazon.aws.iam_instance_profile:
+        name: "{{ profile_name }}"
+        role: "{{ role_name }}"
+        state: present
+
+    - name: Associate IAM instance profile to EC2 instance
+      amazon.aws.ec2_instance:
+        region: "{{ aws_region }}"
+        instance_ids:
+          - "{{ instance_id }}"
+        iam_instance_profile: "{{ profile_name }}"
+        state: running
+
+    - name: Show instance id / profile
+      ansible.builtin.debug:
+        msg:
+          - "InstanceId={{ instance_id }}"
+          - "Attached profile={{ profile_name }}"
+          - "Role={{ role_name }}"

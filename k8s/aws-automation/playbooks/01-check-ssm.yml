@@ -1,0 +1,40 @@
+- name: Check SSM connectivity for target instance
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    - name: Find instance by Name tag
+      amazon.aws.ec2_instance_info:
+        region: "{{ aws_region }}"
+        filters:
+          "tag:Name": "{{ jenkins_instance_name_tag }}"
+          "instance-state-name": "running"
+      register: ec2
+
+    - name: Fail if instance not found
+      ansible.builtin.fail:
+        msg: "No running instance found with tag Name={{ jenkins_instance_name_tag }}"
+      when: ec2.instances | length == 0
+
+    - name: Set instance id
+      ansible.builtin.set_fact:
+        instance_id: "{{ ec2.instances[0].instance_id }}"
+
+    - name: Show instance id
+      ansible.builtin.debug:
+        msg: "Target InstanceId={{ instance_id }}"
+
+    - name: List SSM managed instances (table)
+      ansible.builtin.command: >
+        aws ssm describe-instance-information
+        --region {{ aws_region }}
+        --query "InstanceInformationList[].{InstanceId:InstanceId,PingStatus:PingStatus,Platform:PlatformName}"
+        --output table
+      register: ssm_list
+      changed_when: false
+
+    - name: Print SSM list
+      ansible.builtin.debug:
+        var: ssm_list.stdout

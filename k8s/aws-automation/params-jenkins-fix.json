@@ -1,0 +1,14 @@
+{
+  "commands": [
+    "sudo bash -lc 'set -e; (swapon --show | grep -q /swapfile) || (fallocate -l 2G /swapfile 2>/dev/null || dd if=/dev/zero of=/swapfile bs=1M count=2048); chmod 600 /swapfile; mkswap /swapfile; swapon /swapfile; grep -q \"^/swapfile \" /etc/fstab || echo \"/swapfile none swap sw 0 0\" >> /etc/fstab'",
+    "sudo bash -lc 'mkdir -p /etc/systemd/system/jenkins.service.d'",
+    "sudo bash -lc 'printf \"[Service]\\nTimeoutStartSec=600\\n\" > /etc/systemd/system/jenkins.service.d/override.conf'",
+    "sudo bash -lc 'touch /etc/sysconfig/jenkins; if grep -q \"^JENKINS_JAVA_OPTIONS=\" /etc/sysconfig/jenkins; then sed -i \"s|^JENKINS_JAVA_OPTIONS=.*|JENKINS_JAVA_OPTIONS=\\\"-Djava.awt.headless=true -Xms256m -Xmx512m\\\"|\" /etc/sysconfig/jenkins; else echo \"JENKINS_JAVA_OPTIONS=\\\"-Djava.awt.headless=true -Xms256m -Xmx512m\\\"\" >> /etc/sysconfig/jenkins; fi'",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl enable --now jenkins",
+    "sudo systemctl restart jenkins",
+    "sudo systemctl status jenkins --no-pager || true",
+    "sudo ss -lntp | egrep \":8080\" || true",
+    "sudo test -f /var/lib/jenkins/secrets/initialAdminPassword && sudo cat /var/lib/jenkins/secrets/initialAdminPassword || echo \"initialAdminPassword not ready\""
+  ]
+}

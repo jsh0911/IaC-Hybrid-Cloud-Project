@@ -1,0 +1,20 @@
+---
+- name: Phase2 - Prepare all k8s nodes
+  hosts: k8s_master:k8s_workers
+  gather_facts: true
+  roles:
+    - k8s-common
+    - containerd
+    - k8s-packages
+
+- name: Phase2 - Init control-plane
+  hosts: k8s_master
+  gather_facts: false
+  roles:
+    - k8s-master
+
+- name: Phase2 - Join workers
+  hosts: k8s_workers
+  gather_facts: false
+  roles:
+    - k8s-worker

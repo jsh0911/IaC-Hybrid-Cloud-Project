@@ -1,0 +1,38 @@
+1월 14, 2026 4:24:23 오후 hudson.remoting.Launcher createEngine
+정보: Setting up agent: onprem-agent
+1월 14, 2026 4:24:23 오후 hudson.remoting.Engine startEngine
+정보: Using Remoting version: 3327.v868139a_d00e0
+1월 14, 2026 4:24:23 오후 org.jenkinsci.remoting.engine.WorkDirManager initializeWorkDir
+정보: Using /home/ubuntu/jenkins-agent/remoting as a remoting work directory
+1월 14, 2026 4:24:23 오후 hudson.remoting.Launcher$CuiListener status
+정보: http://jsh-jenkins-alb-21830273.ap-northeast-2.elb.amazonaws.com/login is not ready: 502
+1월 14, 2026 4:24:23 오후 hudson.remoting.Launcher$CuiListener status
+정보: Waiting 1 second before retry
+1월 14, 2026 4:24:27 오후 hudson.remoting.Launcher$CuiListener status
+정보: http://jsh-jenkins-alb-21830273.ap-northeast-2.elb.amazonaws.com/login is not ready: 503
+1월 14, 2026 4:24:27 오후 hudson.remoting.Launcher$CuiListener status
+정보: Waiting 3 seconds before retry
+1월 14, 2026 4:24:34 오후 hudson.remoting.Launcher$CuiListener status
+정보: http://jsh-jenkins-alb-21830273.ap-northeast-2.elb.amazonaws.com/login is not ready: 503
+1월 14, 2026 4:24:34 오후 hudson.remoting.Launcher$CuiListener status
+정보: Waiting 7 seconds before retry
+1월 14, 2026 4:24:42 오후 hudson.remoting.Launcher$CuiListener status
+정보: WebSocket connection open
+1월 14, 2026 4:24:42 오후 hudson.remoting.Launcher$CuiListener status
+정보: Connected
+1월 15, 2026 8:23:43 오전 hudson.slaves.ChannelPinger$1 onDead
+정보: Ping failed. Terminating the channel onprem-agent.
+java.util.concurrent.TimeoutException: Ping started at 1768432782987 hasn't completed by 1768433022989
+	at hudson.remoting.PingThread.ping(PingThread.java:135)
+	at hudson.remoting.PingThread.run(PingThread.java:87)
+
+1월 15, 2026 8:23:43 오전 hudson.remoting.Launcher$CuiListener status
+정보: Write side closed
+1월 15, 2026 8:23:43 오전 hudson.remoting.Launcher$CuiListener status
+정보: Read side closed
+1월 15, 2026 8:23:43 오전 hudson.remoting.Launcher$CuiListener status
+정보: Terminated
+1월 15, 2026 8:23:43 오전 hudson.remoting.Launcher$CuiListener status
+정보: Performing onReconnect operation.
+1월 15, 2026 8:23:43 오전 jenkins.slaves.restarter.JnlpSlaveRestarterInstaller$EngineListenerAdapterImpl onReconnect
+정보: Restarting agent via jenkins.slaves.restarter.UnixSlaveRestarter@6b8593d7

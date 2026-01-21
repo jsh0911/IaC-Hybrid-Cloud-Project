@@ -1,0 +1,49 @@
+---
+- name: Bootstrap S3 buckets for DR artifacts (release + db backup)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  tasks:
+    - name: Create release bucket (idempotent)
+      amazon.aws.s3_bucket:
+        name: "{{ s3_bucket_release }}"
+        state: present
+        region: "{{ aws_region }}"
+        versioning: true
+        encryption: AES256
+        tags:
+          Project: project06
+          Purpose: dr-release
+
+    - name: Block public access on release bucket
+      ansible.builtin.command: >
+        aws s3api put-public-access-block
+        --bucket {{ s3_bucket_release }}
+        --public-access-block-configuration
+        BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+        --region {{ aws_region }}
+      changed_when: false
+
+    - name: Create db-backup bucket (idempotent)
+      amazon.aws.s3_bucket:
+        name: "{{ s3_bucket_db }}"
+        state: present
+        region: "{{ aws_region }}"
+        versioning: true
+        encryption: AES256
+        tags:
+          Project: project06
+          Purpose: dr-dbbackup
+
+    - name: Block public access on db-backup bucket
+      ansible.builtin.command: >
+        aws s3api put-public-access-block
+        --bucket {{ s3_bucket_db }}
+        --public-access-block-configuration
+        BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true
+        --region {{ aws_region }}
+      changed_when: false

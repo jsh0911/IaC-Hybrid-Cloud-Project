@@ -1,0 +1,2 @@
+mysql_backup_user: "root"
+mysql_backup_password: "{{ vault_mysql_backup_password }}"

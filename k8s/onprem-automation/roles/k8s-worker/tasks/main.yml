@@ -1,0 +1,11 @@
+---
+- name: Check if node already joined
+  become: true
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubelet_conf
+
+- name: Join the cluster
+  become: true
+  ansible.builtin.command: "{{ hostvars[groups['k8s_master'][0]].k8s_join_command }} --cri-socket unix:///run/containerd/containerd.sock"
+  when: not kubelet_conf.stat.exists

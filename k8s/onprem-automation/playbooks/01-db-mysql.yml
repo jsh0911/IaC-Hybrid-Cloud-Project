@@ -1,0 +1,7 @@
+---
+- name: Configure MySQL on db-server
+  hosts: db
+  become: true
+  gather_facts: false
+  roles:
+    - mysql

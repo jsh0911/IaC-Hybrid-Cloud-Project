@@ -1,0 +1,109 @@
+---
+- name: Publish Petclinic release bundle to S3 (release bucket)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - ../group_vars/all.yml
+
+  pre_tasks:
+    - name: Generate timestamp once (stable during play)
+      ansible.builtin.set_fact:
+        ts_utc: "{{ lookup('pipe','date -u +%Y%m%dT%H%M%SZ') }}"
+
+    - name: Set paths
+      ansible.builtin.set_fact:
+        artifacts_dir: "{{ playbook_dir }}/../artifacts"
+        release_prefix: "releases/{{ app_name }}/{{ ts_utc }}"
+        bundle_path: "{{ playbook_dir }}/../artifacts/{{ app_name }}-{{ ts_utc }}.tgz"
+        release_json_path: "{{ playbook_dir }}/../artifacts/release-{{ app_name }}-{{ ts_utc }}.json"
+
+    - name: Ensure artifacts dir exists
+      ansible.builtin.file:
+        path: "{{ artifacts_dir }}"
+        state: directory
+        mode: "0755"
+
+  tasks:
+    - name: Show inputs
+      ansible.builtin.debug:
+        msg:
+          - "aws_region={{ aws_region }}"
+          - "s3_bucket_release={{ s3_bucket_release }}"
+          - "app_name={{ app_name }}"
+          - "petclinic_manifest_dir={{ petclinic_manifest_dir }}"
+          - "bundle_path={{ bundle_path }}"
+          - "release_prefix={{ release_prefix }}"
+
+    - name: Ensure manifest directory exists
+      ansible.builtin.stat:
+        path: "{{ petclinic_manifest_dir }}"
+      register: manifest_dir
+
+    - name: Fail if manifest dir missing
+      ansible.builtin.fail:
+        msg: "Manifest dir not found: {{ petclinic_manifest_dir }}"
+      when: not manifest_dir.stat.exists
+
+    - name: Create bundle.tgz (archive module)
+      ansible.builtin.archive:
+        path: "{{ petclinic_manifest_dir }}/"
+        dest: "{{ bundle_path }}"
+        format: gz
+
+    - name: Verify bundle exists before upload
+      ansible.builtin.stat:
+        path: "{{ bundle_path }}"
+        checksum_algorithm: sha256
+      register: bundle_stat
+
+    - name: Fail if bundle missing
+      ansible.builtin.fail:
+        msg: "Bundle not created: {{ bundle_path }}"
+      when: not bundle_stat.stat.exists
+
+    - name: Write release.json locally
+      ansible.builtin.copy:
+        dest: "{{ release_json_path }}"
+        mode: "0644"
+        content: |
+          {
+            "app": "{{ app_name }}",
+            "created_at_utc": "{{ ts_utc }}",
+            "bundle_s3_bucket": "{{ s3_bucket_release }}",
+            "bundle_s3_key": "{{ release_prefix }}/bundle.tgz",
+            "bundle_sha256": "{{ bundle_stat.stat.checksum }}",
+            "source_manifest_dir": "{{ petclinic_manifest_dir }}"
+          }
+
+    - name: Upload bundle.tgz to S3 release bucket
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_release }}"
+        object: "{{ release_prefix }}/bundle.tgz"
+        src: "{{ bundle_path }}"
+        mode: put
+
+    - name: Upload release.json to S3 release bucket
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_release }}"
+        object: "{{ release_prefix }}/release.json"
+        src: "{{ release_json_path }}"
+        mode: put
+
+    - name: Update LATEST_OK pointer
+      amazon.aws.s3_object:
+        region: "{{ aws_region }}"
+        bucket: "{{ s3_bucket_release }}"
+        object: "releases/{{ app_name }}/LATEST_OK"
+        content: "{{ release_prefix }}"
+        mode: put
+
+    - name: Show what was published
+      ansible.builtin.debug:
+        msg:
+          - "Published bundle: s3://{{ s3_bucket_release }}/{{ release_prefix }}/bundle.tgz"
+          - "Published release: s3://{{ s3_bucket_release }}/{{ release_prefix }}/release.json"
+          - "LATEST_OK: s3://{{ s3_bucket_release }}/releases/{{ app_name }}/LATEST_OK"

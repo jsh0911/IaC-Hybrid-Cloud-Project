@@ -1,0 +1,669 @@
+# 이 viminfo 파일은 빔이 만든 것입니다 Vim 8.2.
+# 조심만 한다면 고칠 수도 있습니다!
+
+# Viminfo version
+|1,4
+
+# 이 파일이 저장되었을 때의 'encoding'의 값
+*encoding=utf-8
+
+
+# hlsearch on (H) or off (h):
+~h
+# Last Substitute Search Pattern:
+~MSle0~&community
+
+# 마지막으로 바꾼 문자열:
+$amazon
+
+# 명령 행 히스토리 (새것부터 오래된 것 순):
+:q!
+|2,0,1768443301,,"q!"
+:q
+|2,0,1768443298,,"q"
+:wq
+|2,0,1768443288,,"wq"
+:w
+|2,0,1768376182,,"w"
+:Wq
+|2,0,1768277980,,"Wq"
+:Q
+|2,0,1767593685,,"Q"
+:%s/community/amazon/g
+|2,0,1767337708,,"%s/community/amazon/g"
+
+# 찾을 문자열 히스토리 (새것부터 오래된 것 순):
+? community
+|2,1,1767337708,,"community"
+
+# 표현 히스토리 (새것부터 오래된 것 순):
+
+# 입력 행 히스토리 (새것부터 오래된 것 순):
+
+# 디버그 행 히스토리 (새것부터 오래된 것 순):
+
+# 레지스터:
+""1	LINE	0
+	  service_name        = "com.amazonaws.${data.aws_region.current.name}.ssm"
+|3,1,1,1,1,0,1768348599,"  service_name        = \"com.amazonaws.${data.aws_region.current.name}.ssm\""
+"2	LINE	0
+	data "aws_region" "current" {}
+|3,0,2,1,1,0,1768348552,"data \"aws_region\" \"current\" {}"
+"3	LINE	0
+	  - kubernetes
+|3,0,3,1,1,0,1767839626,"  - kubernetes"
+"4	LINE	0
+	  - kubernetes
+|3,0,4,1,1,0,1767839610,"  - kubernetes"
+"5	LINE	0
+	  - kubernetes
+|3,0,5,1,1,0,1767839569,"  - kubernetes"
+"6	LINE	0
+	    AWS_DEFAULT_REGION: "{{ aws_region }}"
+|3,0,6,1,1,0,1767599283,"    AWS_DEFAULT_REGION: \"{{ aws_region }}\""
+"7	LINE	0
+	    AWS_REGION: "{{ aws_region }}"
+|3,0,7,1,1,0,1767599283,"    AWS_REGION: \"{{ aws_region }}\""
+"8	LINE	0
+	  environment:
+|3,0,8,1,1,0,1767599281,"  environment:"
+"9	LINE	0
+	    AWS_PROFILE: "default"
+|3,0,9,1,1,0,1767598992,"    AWS_PROFILE: \"default\""
+
+# 파일 마크:
+'0  7  0  /opt/codedeploy/scripts/cleanup.sh
+|4,48,7,0,1768443301,"/opt/codedeploy/scripts/cleanup.sh"
+'1  14  9  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,49,14,9,1768442826,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'2  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,50,21,2,1768442355,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'3  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,51,21,2,1768442355,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'4  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,52,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'5  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,53,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'6  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,54,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'7  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,55,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+'8  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,56,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+'9  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,57,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+
+# 점프목록 (새것이 먼저):
+-'  7  0  /opt/codedeploy/scripts/cleanup.sh
+|4,39,7,0,1768443301,"/opt/codedeploy/scripts/cleanup.sh"
+-'  1  0  /opt/codedeploy/scripts/cleanup.sh
+|4,39,1,0,1768443277,"/opt/codedeploy/scripts/cleanup.sh"
+-'  14  9  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,14,9,1768442826,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  14  9  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,14,9,1768442826,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,21,2,1768442556,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,21,2,1768442556,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,21,2,1768442355,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  21  2  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,21,2,1768442355,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442294,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442294,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442294,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442294,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+|4,39,1,0,1768442211,"/opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  1  0  /etc/codedeploy-agent/conf/codedeployagent.yml
+|4,39,1,0,1768434978,"/etc/codedeploy-agent/conf/codedeployagent.yml"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  44  3  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,44,3,1768376236,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/spring-petclinic/Jenkinsfile
+|4,39,1,0,1768376100,"~/k8s/spring-petclinic/Jenkinsfile"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+-'  1  0  ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+|4,39,1,0,1768353287,"~/k8s/terraform-jsh-vpc/jenkins_alb.tf"
+
+# 파일내의 마크 히스토리 (새것부터 오래된 순):
+
+> /opt/codedeploy/scripts/cleanup.sh
+	*	1768443298	0
+	"	7	0
+	^	7	0
+	.	6	48
+	+	6	48
+
+> /opt/codedeploy-agent/deployment-root/95bd7022-e7db-4ca7-92eb-2ee3a684349b/d-D9K7LSJDG/deployment-archive/appspec.yml
+	*	1768442824	0
+	"	14	9
+	^	14	10
+	.	20	16
+	+	20	16
+
+> /etc/codedeploy-agent/conf/codedeployagent.yml
+	*	1768434957	0
+	"	1	0
+
+> ~/k8s/spring-petclinic/Jenkinsfile
+	*	1768376234	0
+	"	44	3
+	^	26	4
+	.	26	4
+	+	26	4
+
+> ~/k8s/terraform-jsh-vpc/jenkins_alb.tf
+	*	1768353285	0
+	"	1	0
+
+> ~/k8s/terraform-jsh-vpc/vpc_endpoints.tf
+	*	1768348683	0
+	"	66	0
+	^	33	52
+	.	31	0
+	+	65	1
+	+	1	52
+	+	31	0
+
+> ~/k8s/terraform-jsh-vpc/outputs.tf
+	*	1768347391	0
+	"	37	0
+	^	37	0
+	.	36	1
+	+	17	1
+	+	22	66
+	+	20	36
+	+	21	0
+	+	23	35
+	+	24	0
+	+	36	1
+
+> ~/k8s/terraform-jsh-vpc/modules/jenkins/outputs.tf
+	*	1768347367	0
+	"	12	0
+	^	12	0
+	.	11	1
+	+	7	1
+	+	11	0
+	+	11	1
+
+> ~/k8s/terraform-jsh-vpc/providers.tf
+	*	1768347167	0
+	"	13	0
+	^	13	1
+	.	12	0
+	+	17	1
+	+	11	1
+	+	9	4
+	+	10	4
+	+	11	6
+	+	12	0
+
+> ~/k8s/terraform-jsh-vpc/variables.tf
+	*	1768347018	0
+	"	44	0
+	^	44	0
+	.	43	1
+	+	29	1
+	+	43	1
+
+> ~/k8s/terraform-jsh-vpc/main.tf
+	*	1768347008	0
+	"	183	0
+	^	183	0
+	.	182	1
+	+	234	1
+	+	253	1
+	+	242	36
+	+	243	44
+	+	246	21
+	+	294	1
+	+	182	1
+
+> ~/k8s/terraform-jsh-vpc/modules/jenkins/variables.tf
+	*	1768278170	0
+	"	44	0
+	^	44	0
+	.	43	1
+	+	11	65
+	+	43	1
+
+> ~/k8s/terraform-jsh-vpc/modules/jenkins/user_data_jenkins.sh.tpl
+	*	1768278007	0
+	"	36	0
+	^	36	0
+	.	35	83
+	+	35	83
+
+> ~/k8s/terraform-jsh-vpc/modules/jenkins/jenkins_ec2.tf
+	*	1768276228	0
+	"	135	0
+	^	135	0
+	.	134	1
+	+	134	1
+
+> ~/k8s/terraform-jsh-vpc/modules/variables.tf
+	*	1768276158	0
+	"	12	0
+	^	12	0
+	.	11	65
+	+	11	65
+
+> ~/k8s/terraform-jsh-vpc/jenkins_ec2.tf
+	*	1768275883	0
+	"	135	0
+	^	135	0
+	.	134	1
+	+	134	1
+
+> ~/k8s/aws-vpc-terraform/outputs.tf
+	*	1768274001	0
+	"	32	0
+	^	32	0
+	.	32	0
+	+	32	0
+
+> ~/k8s/aws-vpc-terraform/main.tf
+	*	1768273884	0
+	"	276	0
+	^	276	0
+	.	275	1
+	+	283	1
+	+	275	1
+
+> ~/k8s/aws-vpc-terraform/variables.tf
+	*	1768273867	0
+	"	45	0
+	^	45	0
+	.	44	1
+	+	38	1
+	+	36	15
+	+	44	1
+
+> /tmp/kubectl-edit-180666584.yaml
+	*	1768265269	0
+	"	25	0
+
+> /tmp/kubectl-edit-1313948945.yaml
+	*	1767853835	0
+	"	21	2
+	^	21	3
+	.	21	2
+	+	20	25
+	+	21	2
+
+> /tmp/kubectl-edit-892188080.yaml
+	*	1767853240	0
+	"	1	0
+
+> /tmp/kubectl-edit-1514527138.yaml
+	*	1767853236	0
+	"	21	2
+	^	21	3
+	.	21	0
+	+	22	2
+	+	21	8
+	+	20	2
+	+	21	0
+
+> /tmp/kubectl-edit-253420216.yaml
+	*	1767853187	0
+	"	4	0
+
+> /tmp/kubectl-edit-2555833769.yaml
+	*	1767853183	0
+	"	22	2
+	^	22	3
+	.	22	2
+	+	20	0
+	+	21	10
+	+	22	2
+	+	20	4
+	+	22	2
+
+> /tmp/kubectl-edit-248500217.yaml
+	*	1767853095	0
+	"	20	3
+	^	20	4
+	.	20	4
+	+	20	4
+
+> /tmp/kubectl-edit-824725044.yaml
+	*	1767852683	0
+	"	49	37
+	^	49	38
+	.	46	48
+	+	46	48
+
+> /tmp/kubectl-edit-3578093977.yaml
+	*	1767850698	0
+	"	40	21
+	^	40	22
+	.	40	21
+	+	40	21
+
+> /tmp/kubectl-edit-4287785968.yaml
+	*	1767850068	0
+	"	18	16
+	^	18	17
+	.	18	16
+	+	18	16
+
+> /tmp/kubectl-edit-1264850102.yaml
+	*	1767849769	0
+	"	37	22
+	^	37	23
+	.	37	22
+	+	41	57
+	+	37	22
+
+> /tmp/kubectl-edit-622333697.yaml
+	*	1767849306	0
+	"	90	0
+
+> /tmp/kubectl-edit-2148176215.yaml
+	*	1767839627	0
+	"	23	0
+	.	23	0
+	+	23	0
+
+> /tmp/kubectl-edit-1525181799.yaml
+	*	1767839615	0
+	"	23	0
+	.	23	0
+	+	23	0
+
+> /tmp/kubectl-edit-2928043641.yaml
+	*	1767839570	0
+	"	23	0
+	.	23	0
+	+	23	0
+
+> ~/k8s/metallb/metallb.yml
+	*	1767838915	0
+	"	170	0
+	^	170	0
+	.	169	17
+	+	169	17
+
+> ~/k8s/aws-automation/playbooks/12-mysql-backup-to-s3.yml
+	*	1767599286	0
+	"	117	0
+	.	117	0
+	+	172	25
+	+	168	5
+	+	169	7
+	+	170	7
+	+	171	5
+	+	172	7
+	+	131	58
+	+	124	4
+	+	117	42
+	+	117	2
+	+	117	0
+	+	115	42
+	+	107	2
+	+	117	0
+
+> ~/k8s/aws-automation/group_vars/all.yml
+	*	1767596036	0
+	"	37	0
+	^	37	0
+	.	36	28
+	+	21	27
+	+	12	0
+	+	31	34
+	+	24	0
+	+	34	30
+	+	36	28
+
+> ~/.ansible/tmp/ansible-local-2144812y4y1by_/tmp8xcrwt_j.yml
+	*	1767594467	0
+	"	1	27
+	^	1	37
+	.	1	36
+	+	1	62
+	+	2	0
+	+	1	36
+
+> ~/k8s/aws-automation/host_vars/db-server.yml
+	*	1767594429	0
+	"	2	57
+	^	2	58
+	.	3	0
+	+	3	0
+
+> ~/k8s/aws-automation/.secrets/vault.pass
+	*	1767593941	0
+	"	1	6
+	^	1	7
+	.	1	6
+	+	1	6
+
+> ~/k8s/aws-automation/ansible.cfg
+	*	1767593737	0
+	"	9	42
+	^	9	43
+	.	9	42
+	+	6	67
+	+	6	27
+	+	8	20
+	+	6	67
+	+	7	0
+	+	6	27
+	+	7	0
+	+	9	42
+
+> ~/k8s/aws-automation/playbooks/11-publish-release-bundle.yml
+	*	1767590122	0
+	"	22	0
+	^	22	0
+	.	21	26
+	+	21	26
+
+> ~/k8s/aws-automation/playbooks/10-bootstrap-s3.yml
+	*	1767589338	0
+	"	22	0
+	^	22	0
+	.	21	26
+	+	21	26
+
+> ~/k8s/aws-automation/playbooks/00-attach-ssm-role.yml
+	*	1767337708	0
+	"	49	6
+	.	30	0
+	+	30	0
+
+> ~/k8s/onprem-automation/group_vars/db.yml
+	*	1767322199	0
+	"	15	24
+	^	15	25
+	.	15	24
+	+	8	30
+	+	15	24
+
+> ~/k8s/onprem-automation/roles/k8s-common/tasks/main.yml
+	*	1767320356	0
+	"	1	0
+
+> ~/k8s/onprem-automation/inventory.yml
+	*	1767320092	0
+	"	4	3
+	^	4	4
+	.	4	3
+	+	26	30
+	+	27	0
+	+	3	48
+	+	2	0
+	+	3	0
+	+	4	3
